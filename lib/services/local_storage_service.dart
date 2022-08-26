@@ -7,11 +7,19 @@ class LocalStorageService extends GetxService {
   static Future<SharedPreferences> init() async =>
       instance = await SharedPreferences.getInstance();
 
-  static String getToken() {
+  static String getAccessToken() {
     return instance.getString("accessToken") ?? "";
   }
 
-  static void setToken(String value) async {
+  static void setAccessToken(String value) async {
     instance.setString("accessToken", value);
+  }
+
+  static String getRefreshToken() {
+    return instance.getString("refreshToken") ?? "";
+  }
+
+  static void setRefreshToken(String value) async {
+    instance.setString("refreshToken", value);
   }
 }

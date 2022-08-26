@@ -3,9 +3,13 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:test_jwt/api/api_common.dart';
-import 'package:test_jwt/service/local_storage_service.dart';
+import 'package:test_jwt/routes/app_pages.dart';
+import 'package:test_jwt/routes/app_routes.dart';
+import 'package:test_jwt/services/local_storage_service.dart';
+import 'package:test_jwt/services/common_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +19,7 @@ void main() async {
 
 Future<void> initialService() async {
   await Get.putAsync(() => LocalStorageService.init());
+  Get.put(CommonService());
 }
 
 class MyApp extends StatelessWidget {
@@ -28,48 +33,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-  final dio = Dio(); // Provide a dio instance
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  void fetchApi() {
-    final client = ApiCommonClient(widget.dio);
-    client.getBooks().then((value) {
-      log(jsonEncode(value));
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          fetchApi();
-        },
-        tooltip: 'Fetch Api',
-        child: const Icon(Icons.circle),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      initialRoute: AppRoutes.LOGIN,
+      getPages: AppPages.getPages,
+      builder: (context, child) {
+        child = EasyLoading.init()(context, child);
+        return child;
+      },
     );
   }
 }

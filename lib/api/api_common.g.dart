@@ -18,19 +18,51 @@ class _ApiCommonClient implements ApiCommonClient {
   String? baseUrl;
 
   @override
-  Future<List<Book>> getBooks() async {
+  Future<GetBooks> getBooks() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<List<dynamic>>(_setStreamType<List<Book>>(
-        Options(method: 'GET', headers: _headers, extra: _extra)
-            .compose(_dio.options, '/books',
-                queryParameters: queryParameters, data: _data)
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    var value = _result.data!
-        .map((dynamic i) => Book.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetBooks>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/books',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GetBooks.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<Token> login(user) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(user.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<Token>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/login',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = Token.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<Token> refreshToken(refreshToken) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'refreshToken': refreshToken};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<Token>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/refreshToken',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = Token.fromJson(_result.data!);
     return value;
   }
 
