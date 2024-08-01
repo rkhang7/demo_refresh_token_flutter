@@ -1,10 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:test_jwt/models/book.dart';
-import 'package:test_jwt/models/get_book.dart';
 import 'package:test_jwt/models/token.dart';
 import 'package:test_jwt/models/user.dart';
 import 'package:test_jwt/services/common_service.dart';
@@ -12,11 +9,11 @@ import 'package:test_jwt/services/local_storage_service.dart';
 
 part 'api_common.g.dart';
 
-@RestApi(baseUrl: "http://10.0.2.2:5000")
+@RestApi(baseUrl: "http://192.168.100.32:3000")
 abstract class ApiCommonClient {
   factory ApiCommonClient(Dio dio, {String? baseUrl}) {
     dio.interceptors.clear();
-    dio.options = BaseOptions(receiveTimeout: 60000, connectTimeout: 60000);
+    // dio.options = BaseOptions(receiveTimeout: 60000, connectTimeout: 60000);
     dio.options.headers.addAll({
       'Authorization': "Bearer ${LocalStorageService.getAccessToken()}",
     });
@@ -38,7 +35,7 @@ abstract class ApiCommonClient {
       // } else if (error.response?.statusCode == 403) {
       //   // todo
       // }
-      if (error.response?.statusCode == 403) {
+      if (error.response?.statusCode == 401) {
         final commonService = Get.find<CommonService>();
         await commonService.refreshToken();
         error.requestOptions.headers["Authorization"] =
@@ -46,7 +43,7 @@ abstract class ApiCommonClient {
         //create request with new access token
         final opts = Options(headers: error.requestOptions.headers);
         final cloneReq = await dio.request(
-          "http://10.0.2.2:5000${error.requestOptions.path}",
+          "http://192.168.100.32:3000${error.requestOptions.path}",
           options: opts,
         );
 
@@ -57,12 +54,12 @@ abstract class ApiCommonClient {
     return _ApiCommonClient(dio, baseUrl: baseUrl);
   }
 
-  @GET("/books")
-  Future<GetBooks> getBooks();
+  @GET("/users")
+  Future<List<User>> getUsers();
 
   @POST("/login")
   Future<Token> login(@Body() User user);
 
-  @POST("/refreshToken")
-  Future<Token> refreshToken(@Field("refreshToken") String refreshToken);
+  @POST("/token")
+  Future<Token> refreshToken(@Field("token") String refreshToken);
 }

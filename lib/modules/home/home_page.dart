@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
-import 'package:test_jwt/models/book.dart';
+import 'package:test_jwt/models/user.dart';
 import 'package:test_jwt/modules/home/home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -35,22 +33,22 @@ class HomePage extends GetView<HomeController> {
     return ListView.separated(
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        Book book = controller.listBook[index];
-        return _buildDataRow(book);
+        User user = controller.listUser[index];
+        return _buildDataRow(user);
       },
       separatorBuilder: (context, index) {
         return const SizedBox(
           height: 5,
         );
       },
-      itemCount: controller.listBook.length,
+      itemCount: controller.listUser.length,
     );
   }
 
-  Widget _buildDataRow(Book book) {
+  Widget _buildDataRow(User user) {
     return ListTile(
-      title: Text(book.name),
-      subtitle: Text(book.id.toString()),
+      title: Text(user.userName),
+      subtitle: Text(user.password.toString()),
     );
   }
 }

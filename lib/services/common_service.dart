@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:test_jwt/models/book.dart';
-import 'package:test_jwt/models/get_book.dart';
 import 'package:test_jwt/models/user.dart';
 import 'package:test_jwt/repositories/common_repository.dart';
 import 'package:test_jwt/services/local_storage_service.dart';
@@ -21,8 +18,8 @@ class CommonService extends GetxService {
     });
   }
 
-  Future<GetBooks> getBooks() async {
-    return await commonRepository.getBooks();
+  Future<List<User>> getUsers() async {
+    return await commonRepository.getUsers();
   }
 
   Future<void> refreshToken() async {
